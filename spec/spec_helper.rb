@@ -9,7 +9,7 @@ require 'mm-sluggable'
 MongoMapper.database = 'mm-sluggable-spec'
 
 def article_class
-  klass = Class.new do
+  Class.new do
     include MongoMapper::Document
     set_collection_name :articles
 
@@ -18,10 +18,18 @@ def article_class
     key :title,       String
     key :account_id,  Integer
   end
-
-  klass.collection.remove
-  klass
 end
 
 RSpec.configure do |config|
+  def wipe_db
+    MongoMapper.database.collections.each do |c|
+      unless (c.name =~ /system/)
+        c.remove
+      end
+    end
+  end
+
+  config.before(:each) do
+    wipe_db
+  end
 end
