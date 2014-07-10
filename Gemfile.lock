@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mm-sluggable (0.3.1)
+    mm-learnup-sluggable (0.3.1)
       mongo_mapper (>= 0.9.0)
 
 GEM
@@ -66,7 +66,7 @@ PLATFORMS
 DEPENDENCIES
   bson_ext
   debugger
-  mm-sluggable!
+  mm-learnup-sluggable!
   rake
   rspec
   simplecov

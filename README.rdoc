@@ -48,7 +48,7 @@ IE assuming we already have an item with the slug of "dave", the slug will be ge
 
 == Install
 
- $ gem install mm-sluggable
+ $ gem install mm-learnup-sluggable
 
 == Copyright
 

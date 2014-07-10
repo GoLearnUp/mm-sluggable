@@ -5,9 +5,9 @@ require 'rubygems'
 require 'rspec'
 require 'simplecov'
 SimpleCov.start if ENV['COVERAGE'] == '1'
-require 'mm-sluggable'
+require 'mm-learnup-sluggable'
 
-MongoMapper.database = 'mm-sluggable-spec'
+MongoMapper.database = 'mm-learnup-sluggable-spec'
 
 def article_class
   Class.new do
