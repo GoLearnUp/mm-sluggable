@@ -13,7 +13,7 @@ def article_class
     include MongoMapper::Document
     set_collection_name :articles
 
-    plugin MongoMapper::Plugins::Sluggable
+    plugin MongoMapper::Plugins::LearnupSluggable
 
     key :title,       String
     key :account_id,  Integer
@@ -25,7 +25,7 @@ def employer_class
     include MongoMapper::Document
     set_collection_name :employers
 
-    plugin MongoMapper::Plugins::Sluggable
+    plugin MongoMapper::Plugins::LearnupSluggable
 
     key :title,       String
     sluggable :title

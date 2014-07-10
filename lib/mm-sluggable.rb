@@ -2,7 +2,7 @@ require 'mongo_mapper'
 
 module MongoMapper
   module Plugins
-    module Sluggable
+    module LearnupSluggable
       extend ActiveSupport::Concern
 
       class OldSlugException < StandardError
@@ -122,7 +122,7 @@ module MongoMapper
     end
 
     def old_slug_exception(slug, obj)
-      error = MongoMapper::Plugins::Sluggable::OldSlugException.new
+      error = MongoMapper::Plugins::LearnupSluggable::OldSlugException.new
       error.old_slug = slug
       error.new_slug = obj.slug
       error.object = obj

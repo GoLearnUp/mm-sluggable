@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe "MongoMapper::Plugins::Sluggable" do
+describe MongoMapper::Plugins::LearnupSluggable do
 
   before(:each) do
     @klass = article_class
@@ -157,7 +157,7 @@ describe "MongoMapper::Plugins::Sluggable" do
     describe "when defined in the base class" do
       before do
         Animal.instance_eval do
-          plugin MongoMapper::Plugins::Sluggable
+          plugin MongoMapper::Plugins::LearnupSluggable
           sluggable :name
         end
       end
@@ -176,7 +176,7 @@ describe "MongoMapper::Plugins::Sluggable" do
     describe "when defined on the subclass" do
       before do
         Dog.instance_eval do
-          plugin MongoMapper::Plugins::Sluggable
+          plugin MongoMapper::Plugins::LearnupSluggable
           sluggable :name
         end
       end
@@ -258,7 +258,7 @@ describe "MongoMapper::Plugins::Sluggable" do
 
       expect {
         @employer_class.find_by_slug(@old_slug)
-      }.to raise_error(MongoMapper::Plugins::Sluggable::OldSlugException)
+      }.to raise_error(MongoMapper::Plugins::LearnupSluggable::OldSlugException)
 
       begin
         @employer_class.find_by_slug(@old_slug)
