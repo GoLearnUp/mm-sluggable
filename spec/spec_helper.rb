@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'rubygems'
 require 'rspec'
 require 'simplecov'
-# SimpleCov.start
+SimpleCov.start if ENV['COVERAGE'] == '1'
 require 'mm-sluggable'
 
 MongoMapper.database = 'mm-sluggable-spec'
