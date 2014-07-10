@@ -34,6 +34,12 @@ describe "MongoMapper::Plugins::Sluggable" do
       @article.valid?
       @article.slug.length.should == 256
     end
+
+    it "downcases slugs" do
+      @article.title = "FOO"
+      @article.valid?
+      @article.slug.should == "foo"
+    end
   end
 
   describe "with scope" do
@@ -183,6 +189,83 @@ describe "MongoMapper::Plugins::Sluggable" do
         dog = Dog.new(:name => "rover")
         dog.save!
         dog.slug.should == "rover"
+      end
+    end
+  end
+
+  describe "updating a slug (and keeping around old slugs)" do
+    before do
+      @employer_class = employer_class
+      @employer = @employer_class.new(:title => "original")
+      @employer.save!
+
+      @old_slug = @employer.slug
+    end
+
+    it "should save the old slug in the old_slugs array" do
+      @employer.slug = "foo-bar-baz"
+      @employer.save!
+
+      @employer.reload
+      @employer.slug.should == 'foo-bar-baz'
+      @employer.old_slugs.should == [@old_slug]
+    end
+
+    it "should remove a slug if it is the new slug" do
+      @employer.slug = "foo-bar-baz"
+      @employer.save!
+
+      @employer.slug = @old_slug
+      @employer.save!
+
+      @employer.slug.should == @old_slug
+      @employer.old_slugs.should == ["foo-bar-baz"]
+    end
+
+    it "should not add a slug to the old_slugs list twice" do
+      @employer.slug = "one"
+      @employer.save!
+
+      @employer.slug = "two"
+      @employer.save!
+
+      @employer.slug = "one"
+      @employer.save!
+
+      @employer.slug = "two"
+      @employer.save!
+
+      @employer.old_slugs.should == [@old_slug, "one"]
+    end
+  end
+
+  describe "find_by_slug" do
+    before do
+      @employer_class = employer_class
+      @employer = @employer_class.new(:title => "original")
+      @employer.save!
+
+      @old_slug = @employer.slug
+    end
+
+    it "should find by slug" do
+      @employer_class.find_by_slug(@employer.slug).should == @employer
+    end
+
+    it "should raise an OldSlugException if in the old slug list with the object + slug" do
+      @employer.slug = "foo"
+      @employer.save!
+
+      expect {
+        @employer_class.find_by_slug(@old_slug)
+      }.to raise_error(MongoMapper::Plugins::Sluggable::OldSlugException)
+
+      begin
+        @employer_class.find_by_slug(@old_slug)
+      rescue => e
+        e.object.should be_a_kind_of(@employer_class)
+        e.new_slug.should == "foo"
+        e.old_slug.should == @old_slug
       end
     end
   end

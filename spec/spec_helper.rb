@@ -20,6 +20,18 @@ def article_class
   end
 end
 
+def employer_class
+  Class.new do
+    include MongoMapper::Document
+    set_collection_name :employers
+
+    plugin MongoMapper::Plugins::Sluggable
+
+    key :title,       String
+    sluggable :title
+  end
+end
+
 RSpec.configure do |config|
   def wipe_db
     MongoMapper.database.collections.each do |c|
