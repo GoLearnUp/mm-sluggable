@@ -42,7 +42,7 @@ def training_class
 
     key :title,       String
     key :job_title_id, Integer
-    sluggable :title, :scope => :job_title_id
+    sluggable :title, :scope => :job_title_id, :callback => :before_validation
   end
 end
 

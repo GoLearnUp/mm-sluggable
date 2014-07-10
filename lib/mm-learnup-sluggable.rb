@@ -98,7 +98,6 @@ module MongoMapper
         end
 
         options = klass.slug_options
-        return unless self.send(options[:key]).blank?
 
         to_slug = self[options[:to_slug]]
         return if to_slug.blank?
@@ -108,6 +107,9 @@ module MongoMapper
         conds = {}
         conds[options[:key]]   = the_slug
         conds[options[:scope]] = self.send(options[:scope]) if options[:scope]
+        conds['_id'] = {
+          '$ne' => self.id
+        }
 
         # todo - remove the loop and use regex instead so we can do it in one query
         i = options[:start]

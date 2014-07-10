@@ -376,7 +376,7 @@ describe MongoMapper::Plugins::LearnupSluggable do
       @training_two.slug.should == "foo-2"
     end
 
-    pending "should generate a new slug when the field changes and it scope it properly" do
+    it "should generate a new slug when the field changes and it scope it properly (if set to before_validation)" do
       @training = @training_class.new({
         :job_title_id => 1,
         :title => "Foo"
