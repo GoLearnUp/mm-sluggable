@@ -268,5 +268,88 @@ describe MongoMapper::Plugins::LearnupSluggable do
         e.old_slug.should == @old_slug
       end
     end
+
+    it "should raise an old slug exception if the case doesn't match (should it?)" do
+      lambda {
+        @employer_class.find_by_slug("ORIGINAL")
+      }.should raise_error(MongoMapper::Plugins::LearnupSluggable::OldSlugException)
+    end
+  end
+
+  describe "find_by_slug_or_id" do
+    before do
+      @employer_class = employer_class
+      @employer = @employer_class.new(:title => "original")
+      @employer.save!
+    end
+
+    it "should find an object by slug" do
+      @employer_class.find_by_slug_or_id(@employer.slug).should == @employer
+    end
+
+    it "should find an object by id" do
+      @employer_class.find_by_slug_or_id(@employer.id).should == @employer
+    end
+
+    it "should return nil if it cannot find the slug" do
+      @employer_class.find_by_slug_or_id("foobar").should be_nil
+    end
+  end
+
+  describe "find_by_slug_or_id!" do
+    before do
+      @employer_class = employer_class
+      @employer = @employer_class.new(:title => "original")
+      @employer.save!
+    end
+
+    it "should find an object by slug" do
+      @employer_class.find_by_slug_or_id!(@employer.slug).should == @employer
+    end
+
+    it "should find an object by id" do
+      @employer_class.find_by_slug_or_id!(@employer.id).should == @employer
+    end
+
+    it "should raise a MongoMapper::DocumentNotFound if it cannot find the slug" do
+      lambda {
+        @employer_class.find_by_slug_or_id!("foobar")
+      }.should raise_error(MongoMapper::DocumentNotFound)
+    end
+  end
+
+  describe "find_by_slug!" do
+    before do
+      @employer_class = employer_class
+      @employer = @employer_class.new(:title => "original")
+      @employer.save!
+    end
+
+    it "should find an object by slug" do
+      @employer_class.find_by_slug!(@employer.slug).should == @employer
+    end
+
+    it "should raise a MongoMapper::DocumentNotFound if it cannot find the slug" do
+      lambda {
+        @employer_class.find_by_slug!("foobar")
+      }.should raise_error(MongoMapper::DocumentNotFound)
+    end
+  end
+
+  describe "to_param" do
+    before do
+      @employer_class = employer_class
+      @employer = @employer_class.new(:title => "original")
+      @employer.save!
+    end
+
+    it "should use the id if no slug is set" do
+      @employer.slug = nil
+      @employer.to_param.should == @employer.id.to_s
+    end
+
+    it "should use the slug" do
+      @employer.to_param.should == @employer.slug
+    end
   end
 end
