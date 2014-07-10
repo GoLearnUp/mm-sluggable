@@ -33,6 +33,19 @@ def employer_class
   end
 end
 
+def training_class
+  Class.new do
+    include MongoMapper::Document
+    set_collection_name :trainings
+
+    plugin MongoMapper::Plugins::LearnupSluggable
+
+    key :title,       String
+    key :job_title_id, Integer
+    sluggable :title, :scope => :job_title_id
+  end
+end
+
 RSpec.configure do |config|
   def wipe_db
     MongoMapper.database.collections.each do |c|

@@ -352,4 +352,51 @@ describe MongoMapper::Plugins::LearnupSluggable do
       @employer.to_param.should == @employer.slug
     end
   end
+
+  describe "scoping" do
+    before do
+      @training_class = training_class
+    end
+
+    it "should scope a slug" do
+      @training = @training_class.new({
+        :job_title_id => 1,
+        :title => "Foo"
+      })
+      @training.save!
+
+      @training.slug.should == "foo"
+
+      @training_two = @training_class.new({
+        :job_title_id => 1,
+        :title => "Foo"
+      })
+      @training_two.save!
+
+      @training_two.slug.should == "foo-2"
+    end
+
+    pending "should generate a new slug when the field changes and it scope it properly" do
+      @training = @training_class.new({
+        :job_title_id => 1,
+        :title => "Foo"
+      })
+      @training.save!
+
+      @training.slug.should == "foo"
+
+      @training_two = @training_class.new({
+        :job_title_id => 1,
+        :title => "Bar"
+      })
+      @training_two.save!
+
+      @training_two.slug.should == "bar"
+
+      # now change it
+      @training_two.title = "Foo"
+      @training_two.save!
+      @training_two.slug.should == "foo-2"
+    end
+  end
 end
