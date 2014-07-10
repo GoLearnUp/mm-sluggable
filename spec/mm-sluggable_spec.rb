@@ -138,6 +138,43 @@ describe MongoMapper::Plugins::LearnupSluggable do
     end
   end
 
+  describe "resaving the object" do
+    before do
+      @klass.sluggable :title
+      @article = @klass.new(:title => "testing")
+      @article.save!
+    end
+
+    it "should have the slug" do
+      @article.slug.should == "testing"
+    end
+
+    it "should have the same slug after saving" do
+      @article.save!
+      @article.slug.should == "testing"
+    end
+
+    it "should keep the same slug on a second object" do
+      @klass.sluggable :title
+      @article_two = @klass.new(:title => "testing")
+      @article_two.save!
+
+      @article_two.slug.should == "testing-2"
+
+      @article_two.save!
+      @article.save!
+
+      @article.slug.should == "testing"
+      @article_two.slug.should == "testing-2"
+
+      @article.save!
+      @article_two.save!
+
+      @article.slug.should == "testing"
+      @article_two.slug.should == "testing-2"
+    end
+  end
+
   describe "with SCI" do
     before do
       Animal = Class.new do
@@ -203,7 +240,7 @@ describe MongoMapper::Plugins::LearnupSluggable do
     end
 
     it "should save the old slug in the old_slugs array" do
-      @employer.slug = "foo-bar-baz"
+      @employer.title = "Foo bar baz"
       @employer.save!
 
       @employer.reload
@@ -212,10 +249,10 @@ describe MongoMapper::Plugins::LearnupSluggable do
     end
 
     it "should remove a slug if it is the new slug" do
-      @employer.slug = "foo-bar-baz"
+      @employer.title = "foo bar baz"
       @employer.save!
 
-      @employer.slug = @old_slug
+      @employer.title = "original"
       @employer.save!
 
       @employer.slug.should == @old_slug
@@ -223,16 +260,16 @@ describe MongoMapper::Plugins::LearnupSluggable do
     end
 
     it "should not add a slug to the old_slugs list twice" do
-      @employer.slug = "one"
+      @employer.title = "one"
       @employer.save!
 
-      @employer.slug = "two"
+      @employer.title = "two"
       @employer.save!
 
-      @employer.slug = "one"
+      @employer.title = "one"
       @employer.save!
 
-      @employer.slug = "two"
+      @employer.title = "two"
       @employer.save!
 
       @employer.old_slugs.should == [@old_slug, "one"]
@@ -253,7 +290,7 @@ describe MongoMapper::Plugins::LearnupSluggable do
     end
 
     it "should raise an OldSlugException if in the old slug list with the object + slug" do
-      @employer.slug = "foo"
+      @employer.title = "foo"
       @employer.save!
 
       expect {
@@ -376,7 +413,7 @@ describe MongoMapper::Plugins::LearnupSluggable do
       @training_two.slug.should == "foo-2"
     end
 
-    pending "should generate a new slug when the field changes and it scope it properly" do
+    it "should generate a new slug when the field changes and it scope it properly" do
       @training = @training_class.new({
         :job_title_id => 1,
         :title => "Foo"
