@@ -22,7 +22,7 @@ module MongoMapper
             :scope        => nil,
             :max_length   => 256,
             :start        => 2,
-            :callback     => [:before_validation, {:on => :create}]
+            :callback     => [:before_validation, {:on => :create, :unless => :slug_field_changed?}]
           }.merge(options)
 
           key slug_options[:key], String
@@ -84,6 +84,10 @@ module MongoMapper
 
           return_value
         end
+      end
+
+      def slug_field_changed?
+        self.send("#{self.class.slug_options[:key]}_changed?")
       end
 
       def set_slug

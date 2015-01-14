@@ -193,6 +193,29 @@ describe MongoMapper::Plugins::LearnupSluggable do
     end
   end
 
+  describe "setting the slug on create" do
+    before do
+      @klass.sluggable :title
+      @article = @klass.new
+    end
+
+    it "should use the slug assigned" do
+      @article.title = "testing 123"
+      @article.slug = "foobar"
+      @article.save!
+
+      @article.slug.should == "foobar"
+    end
+
+    it "should use the slug assigned (the other way around)" do
+      @article.slug = "foobar"
+      @article.title = "testing 123"
+      @article.save!
+
+      @article.slug.should == "foobar"
+    end
+  end
+
   describe "updating a slug (and keeping around old slugs)" do
     before do
       @employer_class = employer_class
