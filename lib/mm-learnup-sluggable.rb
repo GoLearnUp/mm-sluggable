@@ -12,6 +12,34 @@ module MongoMapper
       end
 
       module ClassMethods
+        def old_slug_exception(slug, obj)
+          error = MongoMapper::Plugins::LearnupSluggable::OldSlugException.new
+          error.old_slug = slug
+          error.new_slug = obj.slug
+          error.object = obj
+          error
+        end
+
+        def find_by_slug!(slug)
+          if obj = find_by_slug(slug)
+            obj
+          else
+            raise MongoMapper::DocumentNotFound, "Couldn't find #{self} with slug: #{slug}"
+          end
+        end
+
+        def find_by_slug_or_id(slug_or_id)
+          self.find_by_slug(slug_or_id) || self.find_by_id(slug_or_id)
+        end
+
+        def find_by_slug_or_id!(slug_or_id)
+          if obj = find_by_slug_or_id(slug_or_id)
+            obj
+          else
+            raise MongoMapper::DocumentNotFound, "Couldn't find #{self} with slug or id: #{slug_or_id}"
+          end
+        end
+
         def sluggable(to_slug = :title, options = {})
           class_attribute :slug_options
 
@@ -129,32 +157,5 @@ module MongoMapper
       end
     end
 
-    def old_slug_exception(slug, obj)
-      error = MongoMapper::Plugins::LearnupSluggable::OldSlugException.new
-      error.old_slug = slug
-      error.new_slug = obj.slug
-      error.object = obj
-      error
-    end
-
-    def find_by_slug!(slug)
-      if obj = find_by_slug(slug)
-        obj
-      else
-        raise MongoMapper::DocumentNotFound, "Couldn't find #{self} with slug: #{slug}"
-      end
-    end
-
-    def find_by_slug_or_id(slug_or_id)
-      self.find_by_slug(slug_or_id) || self.find_by_id(slug_or_id)
-    end
-
-    def find_by_slug_or_id!(slug_or_id)
-      if obj = find_by_slug_or_id(slug_or_id)
-        obj
-      else
-        raise MongoMapper::DocumentNotFound, "Couldn't find #{self} with slug or id: #{slug_or_id}"
-      end
-    end
   end
 end
