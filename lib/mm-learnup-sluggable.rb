@@ -86,10 +86,6 @@ module MongoMapper
         end
       end
 
-      def slug_field_changed?
-        self.send("#{self.class.slug_options[:key]}_changed?")
-      end
-
       def set_slug
         klass = self.class
         while klass.respond_to?(:single_collection_parent)
@@ -124,6 +120,12 @@ module MongoMapper
         end
 
         self.send(:"#{options[:key]}=", the_slug)
+      end
+
+    private
+
+      def slug_field_changed?
+        self.send("#{self.class.slug_options[:key]}_changed?")
       end
     end
 
