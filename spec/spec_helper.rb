@@ -10,7 +10,7 @@ require 'mm-learnup-sluggable'
 MongoMapper.database = 'mm-learnup-sluggable-spec'
 
 def article_class
-  Class.new do
+  @article_class ||= Class.new do
     include MongoMapper::Document
     set_collection_name :articles
 
@@ -22,7 +22,7 @@ def article_class
 end
 
 def employer_class
-  Class.new do
+  @employer_class ||= Class.new do
     include MongoMapper::Document
     set_collection_name :employers
 
@@ -34,7 +34,7 @@ def employer_class
 end
 
 def training_class
-  Class.new do
+  @training_class ||= Class.new do
     include MongoMapper::Document
     set_collection_name :trainings
 
