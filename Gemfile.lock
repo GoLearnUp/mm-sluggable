@@ -67,7 +67,7 @@ DEPENDENCIES
   bson_ext
   debugger
   mm-learnup-sluggable!
-  mongo_mapper (~> 0.13.1)
+  mongo_mapper (>= 0.12.0)
   rake
   rspec
   simplecov
