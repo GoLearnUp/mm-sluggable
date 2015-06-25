@@ -20,16 +20,6 @@ module MongoMapper
           error
         end
 
-        def find_by_slug(slug)
-          if obj = where(@_slug_key => slug).first
-            obj
-          elsif obj = where(:old_slugs => slug).first
-            raise old_slug_exception(slug, obj)
-          else
-            nil
-          end
-        end
-
         def find_by_slug!(slug)
           if obj = find_by_slug(slug)
             obj
@@ -71,7 +61,6 @@ module MongoMapper
             self.send(slug_options[:callback], :set_slug)
 
           slug_key = self.slug_options[:key]
-          @_slug_key = slug_key
 
           define_method :to_param do
             self.send(slug_key).blank? ? self.id.to_s : self.send(slug_key)
@@ -96,6 +85,19 @@ module MongoMapper
           #   value = super()
           #   value.respond_to?(:downcase) ? value.downcase : value
           # end
+
+          metaclass = class << self; self; end
+          metaclass.class_eval do
+            define_method :find_by_slug do |slug|
+              if obj = where(slug_key => slug).first
+                obj
+              elsif obj = where(:old_slugs => slug).first
+                raise old_slug_exception(slug, obj)
+              else
+                nil
+              end
+            end
+          end
 
           before_update do
             if self.send("#{slug_key}_changed?")
