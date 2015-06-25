@@ -291,12 +291,6 @@ describe MongoMapper::Plugins::LearnupSluggable do
         e.old_slug.should == @old_slug
       end
     end
-
-    it "should raise an old slug exception if the case doesn't match (should it?)" do
-      lambda {
-        @employer_class.find_by_slug("ORIGINAL")
-      }.should raise_error(MongoMapper::Plugins::LearnupSluggable::OldSlugException)
-    end
   end
 
   describe "find_by_slug_or_id" do

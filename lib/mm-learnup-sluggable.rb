@@ -25,8 +25,6 @@ module MongoMapper
             obj
           elsif obj = where(:old_slugs => slug).first
             raise old_slug_exception(slug, obj)
-          elsif obj = where(@_slug_key => /^#{Regexp.escape(slug)}$/i).first
-            raise old_slug_exception(slug, obj)
           else
             nil
           end
