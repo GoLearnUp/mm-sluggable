@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
-# stub: mm-learnup-sluggable 0.3.5 ruby lib
+# stub: mm-learnup-sluggable 0.3.6 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "mm-learnup-sluggable"
-  s.version = "0.3.5"
+  s.version = "0.3.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.files = ["LICENSE", "README.rdoc", "Rakefile", "lib/mm-learnup-sluggable.rb", "spec"]
   s.homepage = "http://github.com/GoLearnup/mm-learnup-sluggable"
   s.rdoc_options = ["--main", "README.rdoc"]
-  s.rubygems_version = "2.4.5"
+  s.rubygems_version = "2.4.6"
   s.summary = "MongoMapper plugin to cache a slugged version of a field.  Originally forked from mm-learnup-sluggable."
 
   if s.respond_to? :specification_version then

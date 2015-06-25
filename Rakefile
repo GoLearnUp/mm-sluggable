@@ -19,7 +19,7 @@ spec = Gem::Specification.new do |s|
 
   # Change these as appropriate
   s.name              = "mm-learnup-sluggable"
-  s.version           = "0.3.5"
+  s.version           = "0.3.6"
   s.summary           = "MongoMapper plugin to cache a slugged version of a field.  Originally forked from mm-learnup-sluggable."
   s.author            = "Scott Taylor"
   s.email             = "scott@railsnewbie.com"

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mm-learnup-sluggable (0.3.5)
+    mm-learnup-sluggable (0.3.6)
       mongo_mapper (>= 0.9.0)
 
 GEM
