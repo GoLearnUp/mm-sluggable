@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
-# stub: mm-learnup-sluggable 0.3.4 ruby lib
+# stub: mm-learnup-sluggable 0.3.5 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "mm-learnup-sluggable"
-  s.version = "0.3.4"
+  s.version = "0.3.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
