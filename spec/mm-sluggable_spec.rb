@@ -416,4 +416,44 @@ describe MongoMapper::Plugins::LearnupSluggable do
       @training_two.slug.should == "foo-2"
     end
   end
+
+  describe "regression with association proxy in 0.13.x" do
+    before do
+      @job_title_class = Doc do
+        set_collection_name "job_titles"
+      end
+
+      @training_class = Doc do
+        set_collection_name "trainings"
+        plugin MongoMapper::Plugins::LearnupSluggable
+
+        key :title, String
+        sluggable :title
+
+        validates_presence_of :job_title_id
+        validates_presence_of :slug
+        validates_uniqueness_of :slug, scope: :job_title_id
+      end
+
+      @job_title_class.has_many :trainings, :class => @training_class, :foreign_key => :job_title_id
+      @training_class.belongs_to :job_title, :class => @job_title_class
+    end
+
+    it "should scope a find_by_* on has many association with the right parent id" do
+      @job_title_1 = @job_title_class.create!
+      @job_title_2 = @job_title_class.create!
+
+      @training_1 = @training_class.create!(:slug => 'foo', :job_title_id => @job_title_1.id)
+      @training_2 = @training_class.create!(:slug => 'foo', :job_title_id => @job_title_2.id)
+
+      @job_title_1.reload
+      @job_title_2.reload
+
+      @job_title_1.trainings.count.should == 1
+      @job_title_2.trainings.count.should == 1
+
+      @job_title_1.trainings.find_by_slug('foo').should == @training_1
+      @job_title_2.trainings.find_by_slug('foo').should == @training_2
+    end
+  end
 end

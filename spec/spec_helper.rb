@@ -9,6 +9,13 @@ require 'mm-learnup-sluggable'
 
 MongoMapper.database = 'mm-learnup-sluggable-spec'
 
+def Doc(&block)
+  Class.new do
+    include MongoMapper::Document
+    instance_eval(&block)
+  end
+end
+
 def article_class
   @article_class ||= Class.new do
     include MongoMapper::Document
