@@ -456,4 +456,71 @@ describe MongoMapper::Plugins::LearnupSluggable do
       @job_title_2.trainings.find_by_slug('foo').should == @training_2
     end
   end
+
+  describe "regression #2 with association proxy in 0.13.x" do
+    before do
+      @employer_class = Doc do
+        include MongoMapper::Document
+        set_collection_name "employers"
+
+        key :name, String
+
+        def public_job_titles
+          job_titles.active_and_public.sort(:title)
+        end
+      end
+
+      @job_title_class = Doc do
+        set_collection_name "job_titles"
+
+        key :is_active, Boolean, :default => true
+        key :is_public, Boolean, :default => true
+        key :title, String
+
+        sluggable :title, :scope => :employer_id
+
+        class << self
+          def active_and_public
+            where(is_active: true, is_public: true)
+          end
+        end
+      end
+
+      @employer_class.has_many :job_titles, :class => @job_title_class, :foreign_key => :employer_id
+      @job_title_class.belongs_to :employer, :class => @employer_class
+    end
+
+    it "should scope a find_by_* on has many association with the right parent id" do
+      @employer_1 = @employer_class.create!(:name => "Employer 1")
+      @employer_2 = @employer_class.create!(:name => "Employer 2")
+
+      @job_title_1 = @job_title_class.create!({
+        :employer => @employer_1,
+        :slug => "foo",
+        :title => "Foo",
+      })
+      @job_title_2 = @job_title_class.create!({
+        :employer => @employer_2,
+        :slug => "foo",
+        :title => "Foo",
+      })
+
+      @job_title_1.slug.should == "foo"
+      @job_title_2.slug.should == "foo"
+
+      employer = @employer_class.find!(@employer_1.id)
+      employer.name.should == "Employer 1"
+      job_title = employer.job_titles.active_and_public.sort(:title).first
+      job_title.employer.should == @employer_1
+      job_title = employer.public_job_titles.find_by_slug('foo')
+      job_title.employer.should == @employer_1
+
+      employer = @employer_class.find!(@employer_2.id)
+      employer.name.should == "Employer 2"
+      job_title = employer.public_job_titles.first(slug: 'foo')
+      job_title.employer.should == @employer_2
+      job_title = employer.job_titles.where(is_active: true, is_public: true).find_by_slug('foo')
+      job_title.employer.should == @employer_2
+    end
+  end
 end
