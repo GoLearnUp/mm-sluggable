@@ -10,10 +10,12 @@ require 'mm-learnup-sluggable'
 MongoMapper.database = 'mm-learnup-sluggable-spec'
 
 def Doc(&block)
-  Class.new do
+  klass = Class.new do
     include MongoMapper::Document
-    instance_eval(&block)
+    plugin MongoMapper::Plugins::LearnupSluggable
   end
+  klass.class_eval(&block)
+  klass
 end
 
 def article_class
