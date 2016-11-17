@@ -523,4 +523,29 @@ describe MongoMapper::Plugins::LearnupSluggable do
       job_title.employer.should == @employer_2
     end
   end
+
+  describe "custom slug method" do
+    it "should slugify with a custom method" do
+      klass ||= Class.new do
+        include MongoMapper::Document
+        set_collection_name "custom_slug_methods"
+
+        plugin MongoMapper::Plugins::LearnupSluggable
+
+        sluggable :custom_method
+
+      private
+
+        def custom_method
+          "foobar"
+        end
+      end
+
+
+      obj = klass.new
+      obj.save!
+
+      obj.slug.should == "foobar"
+    end
+  end
 end

@@ -125,7 +125,7 @@ module MongoMapper
 
         options = klass.slug_options
 
-        to_slug = self[options[:to_slug]]
+        to_slug = self.send(options[:to_slug])
         return if to_slug.blank?
 
         the_slug = raw_slug = to_slug.send(options[:method]).to_s[0...options[:max_length]]
